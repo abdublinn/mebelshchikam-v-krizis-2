@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css">
+
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23c75b2a'/%3E%3Ctext x='50%25' y='66%25' text-anchor='middle' fill='%23f5f0eb' font-family='Georgia' font-size='20' font-weight='700'%3EМ%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -27,8 +28,6 @@
       <a href="index.html">Главная</a>
       <a href="index.html#preface">Предисловие</a>
       <a href="about.html">Об авторе</a>
-      
-      
     </nav>
   </div>
 </header>
@@ -45,14 +44,18 @@
 <li><a href="articles/01.html">Первые 5 минут продают мебель лучше, чем скидка</a></li>
 </ul>
 </details>
+<details>
+<summary><span class="sidebar__part-num">II</span> Язык цифр</summary>
+<ul>
+<li><a href="articles/02.html">Что такое конверсия и как её мерить</a></li>
+</ul>
+</details>
 
     <a href="conclusion.html">Заключение</a>
 
     <div class="sidebar__nav-section">Автор</div>
     <a href="about.html">Об авторе</a>
   </nav>
-
-  
 </aside>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <button class="sidebar-toggle" id="sidebarToggle" aria-label="Меню">☰</button>
@@ -65,9 +68,9 @@
     <h1 class="hero__title">Мебельщикам в кризис 2</h1>
     <p class="hero__subtitle">Разговор продолжается</p>
     <p class="hero__intro">
-      Вторая книга разговоров о мебельном бизнесе в кризисе. Пока в ней одна статья,
-      дальше их станет больше. Не учебник и не методичка, а честный разговор
-      с собственником о том, что делать, когда привычное перестаёт работать.
+      Вторая книга разговоров о мебельном бизнесе в кризисе. Не учебник и не методичка,
+      а честный разговор с собственником о том, что делать, когда привычное перестаёт
+      работать. Книга растёт статья за статьёй.
     </p>
     <a class="hero__cta" href="#toc">К содержанию →</a>
     <div class="hero__author">Александр Борисович Дублин · 2026</div>
@@ -99,6 +102,19 @@
           <span>~18 мин</span>
         </div>
         <div class="toc__chapter-title">Первые 5 минут продают мебель лучше, чем скидка</div>
+      </a></div>
+    </section><section class="toc__part" id="part-ii">
+      <header class="toc__part-header">
+        <div class="toc__part-num">Часть II</div>
+        <h3 class="toc__part-title">Язык цифр</h3>
+        <p class="toc__part-subtitle">Как читать показатели и не обманываться</p>
+      </header>
+      <div class="toc__chapters"><a class="toc__chapter" href="articles/02.html">
+        <div class="toc__chapter-meta">
+          <span>Глава 2</span>
+          <span>~14 мин</span>
+        </div>
+        <div class="toc__chapter-title">Что такое конверсия и как её мерить</div>
       </a></div>
     </section>
   </div>
@@ -138,7 +154,6 @@
 </section>
 
 
-
 </main>
 
 <footer class="site-footer">
@@ -167,5 +182,6 @@
   // закрыть по выбору пункта на мобильном
   s.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ if (window.innerWidth <= 900) close(); }); });
 })();</script>
+
 </body>
 </html>
