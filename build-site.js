@@ -213,7 +213,7 @@ function blockify(md, articleNum) {
     if (!line.trim()) { i++; continue; }
     const embMatch = line.match(/^\[\[EMBED:([a-zA-Z0-9]+)\]\]\s*$/);
     if (embMatch) { blocks.push({ type: 'embed', id: embMatch[1] }); i++; continue; }
-    const imgMatch = line.match(/^!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)\s*$/);
+    const imgMatch = line.match(/^!\[([^\]]*)\]\(([^\)]+)\)\s*$/);
     if (imgMatch) {
       imgIdx++;
       const local = `${articleNum}_${String(imgIdx).padStart(2, '0')}.jpg`;
@@ -246,6 +246,17 @@ function blockify(md, articleNum) {
       blocks.push({ type: 'ul', items });
       continue;
     }
+    if (/^\d+\.\s+/.test(line)) {
+      const items = [];
+      while (i < lines.length && (/^\d+\.\s+/.test(lines[i]) || !lines[i].trim())) {
+        const ln = lines[i];
+        if (!ln.trim()) { i++; continue; }
+        items.push(ln.replace(/^\d+\.\s+/, '').trim());
+        i++;
+      }
+      blocks.push({ type: 'ol', items });
+      continue;
+    }
     const paraLines = [line];
     i++;
     while (i < lines.length && lines[i].trim() && !/^(#{1,4} |> |!\[|[\*\-]\s|\*\s{2,}|[-_*]{3,}\s*$)/.test(lines[i])) {
@@ -268,6 +279,7 @@ function renderBlock(b, imgPrefix) {
   if (b.type === 'p') return b.br ? `<p>${b.text.split('\n').map(inline).join('<br>\n')}</p>` : `<p>${inline(b.text)}</p>`;
   if (b.type === 'quote') return `<blockquote>${inline(b.text)}</blockquote>`;
   if (b.type === 'ul') return `<ul>${b.items.map(it => `<li>${inline(it)}</li>`).join('')}</ul>`;
+  if (b.type === 'ol') return `<ol>${b.items.map(it => `<li>${inline(it)}</li>`).join('')}</ol>`;
   if (b.type === 'hr') return '<hr>';
   if (b.type === 'img') return `<img src="${imgPrefix}${b.src}" alt="${esc(b.alt)}" loading="lazy">`;
   if (b.type === 'embed') return embedHtml(b.id);
