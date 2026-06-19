@@ -28,6 +28,7 @@ const CHARTS_CSS = `<style>
   .article__body .ln{width:16px;height:0;border-top:3px solid;display:inline-block;}
   .article__body .chartwrap{position:relative;width:100%;height:340px;}
   .article__body .chartwrap.sm{height:290px;}
+  .article__body .chartwrap.tall{height:380px;}
   .article__body figcaption{font-family:var(--font-ui);font-size:.82rem;color:var(--text-muted);margin-top:.5rem;line-height:1.5;}
   .article__body table{border-collapse:collapse;width:100%;font-family:var(--font-ui);font-size:.85rem;margin:1.2rem 0;}
   .article__body th,.article__body td{padding:8px 10px;border:1px solid var(--rule);text-align:center;}
@@ -160,6 +161,63 @@ const EMBEDS = {
     <text x="556" y="158" fill="#8a909a" font-size="12">сюда всё и вернётся</text>
   </svg>
   <figcaption>Схема, а не данные. Показатель не вырос, его перераспределили во времени: пик слева оплачен провалом справа, а устойчивый уровень остался тем же. Настоящий рост сдвинул бы вверх всю линию, а не подбросил бы один месяц.</figcaption>
+</figure>`,
+  cFlow: `<figure>
+  <div class="figttl">Недельный поток воронки сделок</div>
+  <div class="legend">
+    <span><span class="ln" style="border-color:#185FA5"></span>Активных на начало</span>
+    <span><span class="ln" style="border-color:#85B7EB;border-top-style:dashed"></span>Активных на конец</span>
+    <span><span class="sw" style="background:#639922"></span>Пришло</span>
+    <span><span class="sw" style="background:#534AB7"></span>Дальше / успех</span>
+    <span><span class="sw" style="background:#C0392B"></span>Отсев</span>
+  </div>
+  <div class="chartwrap"><canvas id="cFlow"></canvas></div>
+  <figcaption>Линии показывают, сколько сделок активно в воронке на начало и конец каждой недели, столбцы это недельный поток: сколько пришло новых, сколько ушло дальше или в производство, сколько отсеялось. За двенадцать недель видно, что поток ровный: приходит несколько десятков сделок в неделю, примерно столько же уходит. Воронка дышит, но в среднем держится около четырёхсот активных.</figcaption>
+</figure>`,
+  cComp: `<figure>
+  <div class="figttl">Состав воронки по стадиям (остаток на конец недели)</div>
+  <div class="legend">
+    <span><span class="sw" style="background:#B4B2A9"></span>Заказ в работе</span>
+    <span><span class="sw" style="background:#85B7EB"></span>Записан на замер</span>
+    <span><span class="sw" style="background:#1D9E75"></span>Предв. встреча</span>
+    <span><span class="sw" style="background:#97C459"></span>Повторная встреча</span>
+    <span><span class="sw" style="background:#EF9F27"></span>Ожидаем решение</span>
+    <span><span class="sw" style="background:#D85A30"></span>Отложено</span>
+    <span><span class="sw" style="background:#534AB7"></span>Заключён договор</span>
+  </div>
+  <div class="chartwrap"><canvas id="cComp"></canvas></div>
+  <figcaption>Та же воронка, но видно её устройство: каждый цвет это отдельная стадия, высота это сколько сделок в ней застряло на конец недели. Общая высота держится ровно, а вот пропорции плывут. Тёплая полоса «Отложено» медленно, но верно толстеет, пока остальные стоят на месте.</figcaption>
+</figure>`,
+  cPark: `<figure>
+  <div class="figttl">Что происходит на стадии «отложено» неделя за неделей</div>
+  <div class="legend">
+    <span><span class="sw" style="background:#D85A30"></span>Втекло в «Отложено»</span>
+    <span><span class="sw" style="background:#534AB7"></span>Ушло вперёд, к договору</span>
+  </div>
+  <div class="chartwrap sm"><canvas id="cPark"></canvas></div>
+  <figcaption>Каждую неделю в отсек заезжают новые сделки (тёплые столбцы), а вперёд, к договору, не уходит почти никто (фиолетовые столбцы прижаты к нулю). Это не воронка, а сток без слива.</figcaption>
+</figure>`,
+  cInflow: `<figure>
+  <div class="figttl">Динамика входящего потока за полтора года</div>
+  <div class="legend">
+    <span><span class="ln" style="border-color:#639922"></span>Новые лиды / нед</span>
+    <span><span class="ln" style="border-color:#185FA5"></span>Новые сделки / нед</span>
+    <span><span class="ln" style="border-color:#888780;border-top-style:dashed"></span>тренд (среднее за 5 нед)</span>
+  </div>
+  <div class="chartwrap tall"><canvas id="cInflow"></canvas></div>
+  <figcaption>Понедельный график новых заявок и сделок с линией тренда. Поток держится ровно весь период: десятки заявок в неделю, без выраженного роста или спада, с предсказуемым новогодним провалом. Верх воронки здоров.</figcaption>
+</figure>`,
+  cYear: `<figure>
+  <div class="figttl">Состав воронки за полтора года</div>
+  <div class="legend">
+    <span><span class="sw" style="background:#1D9E75"></span>Предв. встреча</span>
+    <span><span class="sw" style="background:#EF9F27"></span>Ожидаем решение</span>
+    <span><span class="sw" style="background:#D85A30"></span>Отложено</span>
+    <span><span class="sw" style="background:#534AB7"></span>Заключён договор</span>
+    <span style="color:var(--text-muted)">+ ранние стадии</span>
+  </div>
+  <div class="chartwrap tall"><canvas id="cYear"></canvas></div>
+  <figcaption>Тот же разрез по стадиям, но на длинном горизонте. Видно, что «отложено» (тёплая полоса) не разовая история последних недель, а медленный тренд: отсек растёт почти весь период, вчетверо с лишним. Болото копилось давно, просто на недельном графике этого было не разглядеть.</figcaption>
 </figure>`
 };
 
@@ -700,9 +758,12 @@ function renderArticle(chapterIdx, article, part, prevLink, nextLink) {
   const bodyHtml = articleBodyHtml(article.blocks, '../images/');
   const rt = readingTime(article.blocks);
   const hasCharts = article.blocks.some(b => b.type === 'embed');
+  // Рисующий скрипт для статей с интерактивными графиками — по номеру статьи
+  const CHARTS_JS = { '02': 'charts-konv.js', '05': 'charts-dvizh.js' };
+  const chartsFile = CHARTS_JS[article.num];
   const extraHead = hasCharts ? CHARTS_CSS : '';
-  const extraBody = hasCharts
-    ? `<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>\n<script src="../assets/charts-konv.js" charset="utf-8"></script>`
+  const extraBody = hasCharts && chartsFile
+    ? `<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>\n<script src="../assets/${chartsFile}" charset="utf-8"></script>`
     : '';
 
   const content = `
