@@ -39,6 +39,31 @@ const CHARTS_CSS = `<style>
   .article__body .hm .colh{height:54px;display:flex;align-items:flex-end;justify-content:center;}
   .article__body .hm .colh span{writing-mode:vertical-rl;transform:rotate(180deg);color:var(--text-muted);font-size:9px;}
   .article__body .hm .c{height:19px;display:flex;align-items:center;justify-content:center;border-radius:2px;}
+  .article__body .mwrap{overflow-x:auto;margin:6px 0;}
+  .article__body .cap{font-size:.8rem;color:var(--text-muted);margin:6px 0;}
+  .article__body .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  .article__body .role{color:var(--text-muted);font-size:.82em;}
+  .article__body .toggle{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+  .article__body .toggle button{font:inherit;font-size:.78rem;padding:6px 12px;border:1px solid var(--rule);background:#fff;color:var(--text-muted);border-radius:20px;cursor:pointer;}
+  .article__body .toggle button.on{background:var(--accent,#185FA5);border-color:var(--accent,#185FA5);color:#fff;font-weight:600;}
+  .article__body table.mx{border-collapse:collapse;width:100%;font-size:12px;margin:0;}
+  .article__body table.mx th,.article__body table.mx td{padding:4px 6px;text-align:center;border:0;border-bottom:1px solid var(--rule);white-space:nowrap;}
+  .article__body table.mx thead th{color:var(--text-muted);font-weight:600;font-size:10.5px;border-bottom:2px solid var(--rule);background:transparent;}
+  .article__body table.mx .wd{font-weight:400;color:var(--text-muted);font-size:9px;}
+  .article__body table.mx td.mn{text-align:left;}
+  .article__body table.mx td.sm{font-weight:600;background:var(--bg-soft);}
+  .article__body table.mx td.zero{color:#cfd2d6;}
+  .article__body table.mx tr.zrow td{background:var(--bg-muted);font-weight:600;text-align:left;color:var(--text);border-left:3px solid var(--zc);}
+  .article__body table.rf,.article__body table.rl{border-collapse:collapse;width:100%;font-size:13px;margin:.6rem 0;}
+  .article__body table.rf th,.article__body table.rf td,.article__body table.rl th,.article__body table.rl td{padding:5px 9px;text-align:right;border:0;border-bottom:1px solid var(--rule);}
+  .article__body table.rf th:first-child,.article__body table.rf td:first-child,.article__body table.rl th:first-child,.article__body table.rl td:first-child,.article__body table.rl th:nth-child(2),.article__body table.rl td:nth-child(2){text-align:left;}
+  .article__body table.rf thead th,.article__body table.rl thead th{color:var(--text-muted);font-weight:600;font-size:11px;border-bottom:2px solid var(--rule);background:transparent;}
+  .article__body table.rf td.pos{color:#27500A;} .article__body table.rf td.neg{color:#791F1F;} .article__body table.rf td.fw{color:#185FA5;font-weight:600;}
+  .article__body .bk{display:grid;grid-template-columns:150px 1fr 36px;align-items:center;gap:10px;margin:5px 0;font-size:12.5px;}
+  .article__body .bk .bkn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .article__body .bkbar{display:flex;height:18px;border-radius:3px;overflow:hidden;background:var(--bg-muted);min-width:2px;}
+  .article__body .bkbar .seg{display:block;}
+  .article__body .bk .bkt{text-align:right;font-weight:600;}
 </style>`;
 
 const EMBEDS = {
@@ -218,6 +243,39 @@ const EMBEDS = {
   </div>
   <div class="chartwrap tall"><canvas id="cYear"></canvas></div>
   <figcaption>Тот же разрез по стадиям, но на длинном горизонте. Видно, что «отложено» (тёплая полоса) не разовая история последних недель, а медленный тренд: отсек растёт почти весь период, вчетверо с лишним. Болото копилось давно, просто на недельном графике этого было не разглядеть.</figcaption>
+</figure>`,
+  mgrZones: `<figure>
+  <div class="figttl">Командная выработка по неделям: сколько уходит в производство, по зонам</div>
+  <div class="legend">
+    <span><span class="sw" style="background:#185FA5"></span>Корпус</span>
+    <span><span class="sw" style="background:#1D9E75"></span>Кухня</span>
+    <span><span class="sw" style="background:#8a6d3b"></span>Техника</span>
+    <span><span class="sw" style="background:#5d6d7e"></span>Лидоруб</span>
+  </div>
+  <div class="chartwrap"><canvas id="cZones"></canvas></div>
+  <figcaption>Результат воронки дают корпус и кухня. Техника закрывает мало (она допродаёт к чужим сделкам), а лидоруб не закрывает вовсе и не должен: его полоса нулевая, потому что он на входе, а не на выходе.</figcaption>
+</figure>`,
+  mgrMatrix: `<figure>
+  <div class="figttl">Матрица движения: менеджер на неделю. Переключайте показатель</div>
+  <div class="toggle" id="mToggle"></div>
+  <div class="mwrap"><table class="mx" id="matrix"></table></div>
+  <figcaption>Кнопки над таблицей переключают показатель: шаги по воронке, отправки в производство, новые сделки, отсев и активный остаток на конец недели. Цвет это значение за неделю, «·» это ноль. Менеджеры сгруппированы по зонам.</figcaption>
+</figure>`,
+  mgrStuck: `<figure>
+  <div class="figttl">Та самая застывшая воронка, неделя за неделей</div>
+  <div class="mwrap"><table class="rf" id="rStuck"></table></div>
+  <figcaption>Остаток у человека только растёт, неделя за неделей капают новые сделки, а столбцы «вперёд» и «в производство» намертво по нулям. Сделки заходят и ложатся, как в склад без выхода.</figcaption>
+</figure>`,
+  mgrRoles: `<figure>
+  <div class="figttl">Команда и роли: одна таблица за квартал</div>
+  <div class="mwrap"><table class="rl" id="tRoles"></table></div>
+  <figcaption>У лидоруба огромный остаток и ноль в производство, и это не провал, а его работа: он принимает поток и раздаёт, а не закрывает. Сравнивать его с продавцами по одному столбцу значит врать о людях.</figcaption>
+</figure>`,
+  mgrBacklog: `<figure>
+  <div class="figttl">Из чего состоит активный остаток у команды</div>
+  <div class="legend" id="bLeg"></div>
+  <div id="bBacklog"></div>
+  <figcaption>У лидоруба остаток набит «Записан на замер» и «Отложено», у застывшего всё стоит в самой первой стадии «Заказ в работе», у обычного продавца остаток поменьше и распределён по воронке. Один и тот же размер хвоста, а работа за ним совсем разная.</figcaption>
 </figure>`
 };
 
@@ -759,7 +817,7 @@ function renderArticle(chapterIdx, article, part, prevLink, nextLink) {
   const rt = readingTime(article.blocks);
   const hasCharts = article.blocks.some(b => b.type === 'embed');
   // Рисующий скрипт для статей с интерактивными графиками — по номеру статьи
-  const CHARTS_JS = { '02': 'charts-konv.js', '05': 'charts-dvizh.js' };
+  const CHARTS_JS = { '02': 'charts-konv.js', '05': 'charts-dvizh.js', '08': 'charts-mgr.js' };
   const chartsFile = CHARTS_JS[article.num];
   const extraHead = hasCharts ? CHARTS_CSS : '';
   const extraBody = hasCharts && chartsFile
